@@ -1,6 +1,5 @@
 import re
 from copy import deepcopy
-from typing import Tuple
 
 def save_previous_version(func):
     def wrapper(self, *args, **kwargs):
@@ -12,12 +11,11 @@ def save_previous_version(func):
     return wrapper
 
 class VersionManager:
-
+    """Version Manager class for semantic versioning."""
     RE_STR = r'^(?P<major>\d+)(?:\.(?P<minor>\d+)(?:\.(?P<patch>\d+))?)?'
     _REGEX = re.compile(RE_STR, re.VERBOSE)
 
     def __init__(self, version: str = "0.0.1") -> None:
-
         self._parse_version(version)
 
     def __repr__(self) -> str:
@@ -37,6 +35,9 @@ class VersionManager:
 
     @save_previous_version
     def major(self) -> 'VersionManager':
+        """Increments major version by 1 and resets minor and patch to 0.
+        returns:
+            VersionManager: current version"""
         self._major += 1
         self._minor = 0
         self._patch = 0
@@ -44,16 +45,25 @@ class VersionManager:
 
     @save_previous_version
     def minor(self) -> 'VersionManager':
+        """Increments minor version by 1 and resets patch to 0.
+        returns:
+            VersionManager: current version"""
         self._minor += 1
         self._patch = 0
         return self
 
     @save_previous_version
     def patch(self) -> 'VersionManager':
+        """Increments patch version by 1.
+        returns:
+            VersionManager: current version"""
         self._patch += 1
         return self
 
     def rollback(self) -> 'VersionManager':
+        """Rolls back to previous version.
+        returns:
+            VersionManager: current version"""
         if not self.previous_versions:
             raise Exception("Cannot rollback!")
 
@@ -66,12 +76,14 @@ class VersionManager:
         return self
 
     def release(self) -> str:
+        """Returns the current version.
+        returns:
+            str: current version"""
         return f"{self._major}.{self._minor}.{self._patch}"
 
 
 class SemVerNotValid(Exception):
     """Exception raised for errors in the input.
-
     """
     def __init__(self, message: str = "Error occurred while parsing version!"):
         self.message = message

@@ -1,4 +1,4 @@
-DESCRIPTION:
+# DESCRIPTION:
 
 In this kata we are going to mimic a software versioning system.
 
